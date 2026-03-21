@@ -1,1 +1,9 @@
-
+{
+  "groups": [
+    {
+      "name": "Group 1",
+      "link": "https://t.me/group1",
+      "appname": "AllGroup"
+    }
+  ]
+}
