@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>AllGroup • Connect & Explore</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      transition: background 0.25s ease, color 0.2s ease;
+      color: #0f172a;
+    }
+
+    /* dark mode premium */
+    body.dark {
+      background: #0f172a;
+      color: #eef2ff;
+    }
+
+    /* custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    body.dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+
+    /* header glassmorph */
+    .header {
+      background: linear-gradient(135deg, #0b6b9e, #0a5a86);
+      backdrop-filter: blur(2px);
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 1.45rem;
+      letter-spacing: -0.3px;
+    }
+    .logo-title span {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .dark-toggle {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      border-radius: 60px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .dark-toggle:hover {
+      background: rgba(255,255,255,0.35);
+      transform: scale(0.96);
+    }
+
+    /* search wrapper */
+    .search-wrapper {
+      padding: 16px 16px 8px 16px;
+      background: inherit;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 48px;
+      padding: 6px 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+    body.dark .search-box {
+      background: #1e293b;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 14px 8px;
+      font-size: 1rem;
+      outline: none;
+      font-weight: 500;
+      color: #0f172a;
+    }
+    body.dark .search-box input {
+      color: #f1f5f9;
+    }
+    .search-box input::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+    .search-icon {
+      color: #5b8cae;
+      font-size: 1.25rem;
+    }
+
+    /* category chips */
+    .categories {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 12px 16px;
+      scrollbar-width: thin;
+      white-space: nowrap;
+    }
+    .cat-btn {
+      background: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      color: #1e293b;
+    }
+    body.dark .cat-btn {
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+    .cat-btn.active {
+      background: #0f6b9e;
+      color: white;
+      box-shadow: 0 4px 10px rgba(11,107,158,0.3);
+    }
+    body.dark .cat-btn.active {
+      background: #2c7da0;
+      color: white;
+    }
+
+    /* notification card (elegant) */
+    .info-card {
+      background: white;
+      margin: 12px 16px;
+      border-radius: 24px;
+      padding: 16px 18px;
+      transition: all 0.2s;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05);
+    }
+    body.dark .info-card {
+      background: #1e293b;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .notify-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .bell {
+      background: #eef2ff;
+      padding: 8px 12px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+    }
+    body.dark .bell {
+      background: #334155;
+    }
+    .ads-badge {
+      background: #fef9c3;
+      color: #854d0e;
+      border-radius: 40px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    body.dark .ads-badge {
+      background: #422c0c;
+      color: #fde047;
+    }
+
+    /* groups grid / list */
+    .groups-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 8px 16px 24px 16px;
+    }
+    .group-card {
+      background: white;
+      border-radius: 24px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.05);
+    }
+    body.dark .group-card {
+      background: #1e293b;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    .group-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -12px rgba(0,0,0,0.15);
+    }
+    .group-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+    }
+    .group-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 28px;
+      object-fit: cover;
+      background: #e2e8f0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    body.dark .group-logo {
+      background: #334155;
+    }
+    .group-details {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .group-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.2px;
+    }
+    .group-cat {
+      font-size: 0.7rem;
+      background: #eef2ff;
+      display: inline-block;
+      width: fit-content;
+      padding: 3px 10px;
+      border-radius: 30px;
+      color: #1e3a8a;
+      font-weight: 600;
+    }
+    body.dark .group-cat {
+      background: #2d3a5e;
+      color: #bbd7fb;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .join-btn {
+      background: linear-gradient(95deg, #0088cc, #0a6b9e);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 5px rgba(0,136,204,0.3);
+    }
+    .join-btn:hover {
+      transform: scale(0.96);
+      background: linear-gradient(95deg, #0077b3, #095e8a);
+    }
+    .fav-btn {
+      background: rgba(0,0,0,0.05);
+      border: none;
+      font-size: 1.55rem;
+      cursor: pointer;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+    body.dark .fav-btn {
+      background: rgba(255,255,255,0.08);
+    }
+    .fav-btn:hover {
+      background: rgba(0,0,0,0.1);
+      transform: scale(0.94);
+    }
+
+    /* empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      opacity: 0.7;
+    }
+    .empty-state svg {
+      width: 80px;
+      margin-bottom: 16px;
+    }
+
+    /* footer */
+    .footer-note {
+      text-align: center;
+      font-size: 0.7rem;
+      padding: 20px 16px 30px;
+      color: #64748b;
+    }
+    body.dark .footer-note {
+      color: #94a3b8;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .group-card {
+      animation: fadeIn 0.25s ease forwards;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-title">
+    🧩 AllGroup <span>beta</span>
+  </div>
+  <button class="dark-toggle" id="darkModeBtn" aria-label="Dark mode">🌙</button>
+</div>
+
+<div class="search-wrapper">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search groups by name..." autocomplete="off">
+  </div>
+</div>
+
+<div class="categories" id="categoryContainer">
+  <button data-cat="all" class="cat-btn active">✨ All</button>
+  <button data-cat="study" class="cat-btn">📚 Study</button>
+  <button data-cat="fun" class="cat-btn">🎉 Fun</button>
+</div>
+
+<!-- dynamic notification panel -->
+<div class="info-card" id="infoPanel">
+  <div class="notify-row">
+    <div class="bell">🔔</div>
+    <div id="notificationText" style="font-weight: 500;">Loading announcements...</div>
+  </div>
+  <div id="adsText" style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+    <span>📢</span> <span>Fetching latest updates</span>
+  </div>
+</div>
+
+<!-- Groups grid -->
+<div id="groupsList" class="groups-container"></div>
+<div class="footer-note">
+  ⚡ Join any group • Save favorites • Stay connected
+</div>
+
+<script>
+  // ---------- DATA & STATE ----------
+  let allGroups = [];            // will be loaded from JSON
+  let favorites = new Set();     // store indices as numbers
+  let currentFilter = "all";
+  let currentSearch = "";
+
+  // Load favorites from localStorage (migrate from array if needed)
+  try {
+    const stored = localStorage.getItem("allgroup_fav");
+    if (stored) {
+      const arr = JSON.parse(stored);
+      if (Array.isArray(arr)) favorites = new Set(arr);
+    }
+  } catch(e) { console.warn(e); }
+
+  // Helper: save favorites
+  function saveFavorites() {
+    const favArray = Array.from(favorites);
+    localStorage.setItem("allgroup_fav", JSON.stringify(favArray));
+  }
+
+  // ---------- DOM Elements ----------
+  const groupsContainer = document.getElementById("groupsList");
+  const searchInput = document.getElementById("searchInput");
+  const notificationDiv = document.getElementById("notificationText");
+  const adsSpan = document.getElementById("adsText");
+  const darkBtn = document.getElementById("darkModeBtn");
+
+  // ---------- Dark Mode with persistence ----------
+  function initDarkMode() {
+    const isDark = localStorage.getItem("allgroup_dark") === "true";
+    if (isDark) {
+      document.body.classList.add("dark");
+      darkBtn.innerHTML = "☀️";
+    } else {
+      darkBtn.innerHTML = "🌙";
+    }
+  }
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+    const darkActive = document.body.classList.contains("dark");
+    localStorage.setItem("allgroup_dark", darkActive);
+    darkBtn.innerHTML = darkActive ? "☀️" : "🌙";
+  }
+  darkBtn.addEventListener("click", toggleDarkMode);
+  initDarkMode();
+
+  // ---------- Render Groups (core) with filtering & search & favorites highlight ----------
+  function renderGroups() {
+    if (!allGroups.length) {
+      groupsContainer.innerHTML = `<div class="empty-state">
+        <div>📭</div><p style="margin-top:8px;">No groups available. Check network or reload.</p>
+      </div>`;
+      return;
+    }
+
+    // 1. filter by category
+    let filtered = [...allGroups];
+    if (currentFilter !== "all") {
+      filtered = filtered.filter(g => g.category === currentFilter);
+    }
+    // 2. search by name (case insensitive)
+    if (currentSearch.trim() !== "") {
+      const query = currentSearch.trim().toLowerCase();
+      filtered = filtered.filter(g => g.name.toLowerCase().includes(query));
+    }
+
+    if (filtered.length === 0) {
+      groupsContainer.innerHTML = `<div class="empty-state">
+        <div>🔎</div><p>No groups match "${currentSearch || (currentFilter !== 'all' ? currentFilter : '')}"</p>
+      </div>`;
+      return;
+    }
+
+    // build HTML with indices (original index used for favorite storage)
+    groupsContainer.innerHTML = "";
+    filtered.forEach((group, idx) => {
+      // we need original index for favorite mapping (since we filter)
+      const originalIndex = allGroups.findIndex(g => g.id === group.id);  // using unique id
+      const isFav = favorites.has(originalIndex);
+      
+      const card = document.createElement("div");
+      card.className = "group-card";
+      
+      // logo fallback with initials
+      const logoUrl = group.logo && group.logo.startsWith("http") ? group.logo : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${encodeURIComponent(group.name.charAt(0))}&size=52`;
+      
+      const categoryLabel = group.category === "study" ? "📖 Study" : (group.category === "fun" ? "🎈 Fun" : "🌐 General");
+      
+      card.innerHTML = `
+        <div class="group-info">
+          <img class="group-logo" src="${logoUrl}" alt="${group.name}" onerror="this.src='https://ui-avatars.com/api/?background=64748b&color=fff&name=${group.name.charAt(0)}'">
+          <div class="group-details">
+            <div class="group-name">${escapeHtml(group.name)}</div>
+            <div class="group-cat">${categoryLabel}</div>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button class="join-btn" data-link="${group.link}">Join ➜</button>
+          <button class="fav-btn" data-index="${originalIndex}" data-fav="${isFav}">${isFav ? "⭐" : "☆"}</button>
+        </div>
+      `;
+      
+      groupsContainer.appendChild(card);
+    });
+    
+    // attach event listeners dynamically (better performance)
+    document.querySelectorAll(".join-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const link = btn.getAttribute("data-link");
+        if (link && link !== "#") window.open(link, "_blank", "noopener,noreferrer");
+        else alert("Link not available");
+      });
+    });
+    
+    document.querySelectorAll(".fav-btn").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const idx = parseInt(btn.getAttribute("data-index"));
+        if (isNaN(idx)) return;
+        const wasFav = favorites.has(idx);
+        if (wasFav) {
+          favorites.delete(idx);
+        } else {
+          favorites.add(idx);
+        }
+        saveFavorites();
+        renderGroups();  // re-render to reflect favorite stars
+      });
+    });
+  }
+
+  // simple XSS protection
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+
+  // ---------- Fetch groups with enhanced structure (supports id + fallback) ----------
+  async function fetchGroups() {
+    try {
+      const response = await fetch("https://itzmebibk-spec.github.io/Alldarkxop/newgroups.json");
+      if (!response.ok) throw new Error("Network error");
+      const data = await response.json();
+      // support both "groups" array or direct array
+      let groupsArray = Array.isArray(data) ? data : (data.groups || []);
+      if (!groupsArray.length) throw new Error("Empty groups");
+      
+      // enrich each group: assign unique id (based on name+index) if missing, and ensure category & link
+      allGroups = groupsArray.map((g, idx) => ({
+        id: g.id || `group_${idx}_${Date.now()}`,
+        name: g.name || "Unnamed Group",
+        link: g.link || "#",
+        category: (g.category === "study" || g.category === "fun") ? g.category : "general",
+        logo: g.logo || null,
+        originalIndex: idx
+      }));
+      
+      // after loading, reapply favorites: but favorites store indices based on this new allGroups order
+      // we need to clean favorites indices that exceed range
+      const maxIndex = allGroups.length - 1;
+      const validFavs = new Set();
+      for (let favIdx of favorites) {
+        if (favIdx >= 0 && favIdx <= maxIndex) validFavs.add(favIdx);
+      }
+      favorites = validFavs;
+      saveFavorites();
+      
+      renderGroups();
+    } catch (err) {
+      console.error("Groups fetch error:", err);
+      groupsContainer.innerHTML = `<div class="empty-state"><div>⚠️</div><p>Failed to load groups.<br>Check connection or refresh.</p></div>`;
+      // fallback mock data? not needed, but user sees nice msg
+      allGroups = [];
+      renderGroups();
+    }
+  }
+  
+  // ---------- Fetch Announcement (notification & ads) with better formatting ----------
+  async function fetchAnnouncements() {
+    try {
+      const res = await fetch("https://itzmebibk-spec.github.io/Alldarkxop/announcement.json");
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (data.notification) {
+        notificationDiv.innerHTML = `🔔 ${escapeHtml(data.notification)}`;
+      } else {
+        notificationDiv.innerHTML = `📢 Stay tuned!`;
+      }
+      if (data.ads) {
+        adsSpan.innerHTML = `<span>📢</span> <span>${escapeHtml(data.ads)}</span>`;
+      } else {
+        adsSpan.innerHTML = `<span>✨</span> <span>No active promotions</span>`;
+      }
+    } catch (err) {
+      notificationDiv.innerHTML = "📡 Welcome to AllGroup!";
+      adsSpan.innerHTML = `<span>💡</span> <span>Join the best communities</span>`;
+    }
+  }
+  
+  // ---------- Category filter with active UI ----------
+  function setupCategories() {
+    const btns = document.querySelectorAll(".cat-btn");
+    btns.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const cat = btn.getAttribute("data-cat");
+        if (!cat) return;
+        currentFilter = cat;
+        // update active class
+        btns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        // reset search if needed? keep search but re-render
+        renderGroups();
+      });
+    });
+  }
+  
+  // search with debounce
+  let debounceTimer;
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      currentSearch = e.target.value;
+      renderGroups();
+    }, 250);
+  });
+  
+  // optional: if you want reset search on category change? no, it's fine.
+  
+  // ---------- Initialize app with high performance ----------
+  async function init() {
+    await Promise.all([fetchGroups(), fetchAnnouncements()]);
+    setupCategories();
+  }
+  
+  init();
+</script>
+</body>
+</html>
