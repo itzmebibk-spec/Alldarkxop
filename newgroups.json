@@ -1,9 +1,49 @@
 {
   "groups": [
     {
-      "name": "Group 1",
-      "link": "https://t.me/group1",
-      "appname": "AllGroup"
+      "id": "grp_001",
+      "name": "💻 Code Masters Hub",
+      "category": "study",
+      "link": "https://t.me/codemasters",
+      "logo": "https://api.dicebear.com/7.x/initials/svg?seed=CM&backgroundColor=0D8ABC",
+      "description": "Learn programming, DSA, web development & more",
+      "members": 12540
+    },
+    {
+      "id": "grp_002",
+      "name": "🎮 Gaming Universe",
+      "category": "fun",
+      "link": "https://discord.gg/gaminguniverse",
+      "logo": "https://api.dicebear.com/7.x/initials/svg?seed=GU&backgroundColor=6B4E71",
+      "description": "PC, PS5, Xbox, Nintendo - all gamers welcome",
+      "members": 8750
+    },
+    {
+      "id": "grp_003",
+      "name": "🤖 AI & ML Explorers",
+      "category": "study",
+      "link": "https://t.me/aiexplorers",
+      "logo": "https://api.dicebear.com/7.x/initials/svg?seed=AI&backgroundColor=2C3E50",
+      "description": "Artificial Intelligence, Machine Learning, Deep Learning discussions",
+      "members": 5630
+    },
+    {
+      "id": "grp_004",
+      "name": "🎵 Melody Makers",
+      "category": "fun",
+      "link": "https://t.me/melodymakers",
+      "logo": "https://api.dicebear.com/7.x/initials/svg?seed=MM&backgroundColor=8B5F65",
+      "description": "Share music, discover artists, discuss genres",
+      "members": 3420
+    },
+    {
+      "id": "grp_005",
+      "name": "⚽ Sports Mania",
+      "category": "fun",
+      "link": "https://t.me/sportsmania",
+      "logo": "https://api.dicebear.com/7.x/initials/svg?seed=SM&backgroundColor=2C6E2F",
+      "description": "Football, cricket, basketball, F1 & more",
+      "members": 15670
     }
   ]
 }
