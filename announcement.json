@@ -1,78 +1,10 @@
 {
   "notification": {
-    "title": "🎉 New Update!",
-    "message": "Welcome to AllGroup Fast Edition - 2x smoother experience!",
-    "type": "info",
-    "priority": "high",
-    "icon": "🚀",
-    "link": "https://sfw.vc/allgroup",
-    "expires": "2026-04-30"
+    "title": "New Communities Added!",
+    "message": "Check out the latest groups added today. Join and connect!"
   },
-  "ads": {
-    "active": true,
-    "message": "🔥 Join 50,000+ members • Share your group link • Get featured!",
-    "cta": "Submit Your Group",
-    "ctaLink": "https://t.me/allgroup_submit",
-    "color": "gradient"
-  },
-  "featuredGroups": [
-    {
-      "id": "grp_001",
-      "name": "Code Masters Hub",
-      "reason": "Most active coding community"
-    },
-    {
-      "id": "grp_007",
-      "name": "Sports Mania",
-      "reason": "10K+ members this week"
-    }
-  ],
-  "stats": {
-    "totalMembers": 87420,
-    "activeToday": 12500,
-    "totalGroups": 24,
-    "lastUpdated": "2026-03-22"
-  },
-  "maintenance": {
-    "mode": false,
-    "message": null
-  },
-  "theme": {
-    "primaryColor": "#0088cc",
-    "darkModeAvailable": true
-  },
-  "announcements": [
-    {
-      "id": 1,
-      "date": "2026-03-22",
-      "title": "✨ Performance Update",
-      "content": "AllGroup now loads 2x faster with instant search!",
-      "type": "update"
-    },
-    {
-      "id": 2,
-      "date": "2026-03-21",
-      "title": "⭐ New Feature: Favorites",
-      "content": "Save your favorite groups and access them anytime!",
-      "type": "feature"
-    },
-    {
-      "id": 3,
-      "date": "2026-03-20",
-      "title": "🌙 Dark Mode Available",
-      "content": "Switch to dark mode for comfortable night browsing!",
-      "type": "feature"
-    }
-  ],
-  "tips": [
-    "Use search to find groups instantly",
-    "Star your favorite groups to save them",
-    "Share AllGroup with friends to grow communities",
-    "Check back daily for new featured groups"
-  ],
   "promotions": {
-    "enabled": true,
-    "banner": "🎁 Special Offer: Get your group listed in featured section - DM @allgroup_admin",
-    "discount": null
-  }
+    "link": "https://sfw.vc/allgroup"
+  },
+  "ads": "Join amazing communities every day!"
 }
