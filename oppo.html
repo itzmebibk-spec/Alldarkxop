@@ -3,556 +3,372 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>AllGroup • Connect & Explore</title>
+  <title>AllGroup • Pro</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+    :root {
+      --primary: #0088cc; --bg: #f8fafc; --card: #ffffff;
+      --text: #1e293b; --sub: #64748b; --drawer-w: 280px;
+      --accent: #e11d48;
+    }
+    .dark {
+      --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --sub: #94a3b8;
     }
 
-    body {
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: #f8fafc;
-      transition: background 0.25s ease, color 0.2s ease;
-      color: #0f172a;
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+    .app-wrapper { display: flex; flex-direction: column; height: 100vh; }
+    .icon { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2; fill: none; vertical-align: middle; }
+
+    /* --- MESSAGE BOX STYLE --- */
+    .msg-box {
+      background: var(--card); margin: 15px 15px 5px; padding: 16px; 
+      border-radius: 16px; border-left: 5px solid var(--primary);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      animation: slideUp 0.4s ease;
+    }
+    .msg-box h3 { font-size: 1rem; font-weight: 800; color: var(--primary); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+    .msg-box p { font-size: 0.85rem; color: var(--text); line-height: 1.4; margin-bottom: 12px; }
+    .msg-link { 
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary); color: white; padding: 8px 14px; 
+      border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; 
     }
 
-    /* dark mode premium */
-    body.dark {
-      background: #0f172a;
-      color: #eef2ff;
-    }
+    /* --- DRAWER & UI --- */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; }
+    .drawer-overlay.active { opacity: 1; visibility: visible; }
+    .sidebar { position: fixed; top: 0; left: calc(-1 * var(--drawer-w)); width: var(--drawer-w); height: 100%; background: var(--card); z-index: 2001; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
+    .sidebar.active { left: 0; }
+    .sidebar-header { background: var(--primary); color: white; padding: 40px 20px 20px; }
+    .sidebar-menu { padding: 10px 0; flex: 1; }
+    .menu-item { padding: 14px 20px; display: flex; align-items: center; gap: 15px; font-weight: 600; cursor: pointer; color: var(--text); }
+    .menu-item.active { color: var(--primary); background: rgba(0,136,204,0.1); }
 
-    /* custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 10px;
-    }
-    body.dark ::-webkit-scrollbar-thumb {
-      background: #334155;
-    }
+    .header { background: var(--primary); color: white; padding: 14px 18px; display: flex; align-items: center; gap: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .logo { font-weight: 800; font-size: 1.1rem; flex: 1; }
 
-    /* header glassmorph */
-    .header {
-      background: linear-gradient(135deg, #0b6b9e, #0a5a86);
-      backdrop-filter: blur(2px);
-      color: white;
-      padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .logo-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      font-size: 1.45rem;
-      letter-spacing: -0.3px;
-    }
-    .logo-title span {
-      background: rgba(255,255,255,0.2);
-      padding: 4px 10px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-    .dark-toggle {
-      background: rgba(255,255,255,0.2);
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      border-radius: 60px;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-      backdrop-filter: blur(4px);
-    }
-    .dark-toggle:hover {
-      background: rgba(255,255,255,0.35);
-      transform: scale(0.96);
-    }
+    .page-header { padding: 15px 18px 5px; }
+    .page-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; }
+    .search-wrap { background: var(--card); border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .search-wrap input { border: none; background: transparent; width: 100%; outline: none; color: inherit; font-size: 0.9rem; }
 
-    /* search wrapper */
-    .search-wrapper {
-      padding: 16px 16px 8px 16px;
-      background: inherit;
-    }
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: white;
-      border-radius: 48px;
-      padding: 6px 18px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
-      transition: all 0.2s;
-    }
-    body.dark .search-box {
-      background: #1e293b;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .search-box input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 14px 8px;
-      font-size: 1rem;
-      outline: none;
-      font-weight: 500;
-      color: #0f172a;
-    }
-    body.dark .search-box input {
-      color: #f1f5f9;
-    }
-    .search-box input::placeholder {
-      color: #94a3b8;
-      font-weight: 400;
-    }
-    .search-icon {
-      color: #5b8cae;
-      font-size: 1.25rem;
-    }
+    .main-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .container { padding: 10px 15px 100px; display: flex; flex-direction: column; gap: 12px; }
 
-    /* category chips */
-    .categories {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      padding: 12px 16px;
-      scrollbar-width: thin;
-      white-space: nowrap;
-    }
-    .cat-btn {
-      background: white;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      color: #1e293b;
-    }
-    body.dark .cat-btn {
-      background: #1e293b;
-      color: #cbd5e1;
-    }
-    .cat-btn.active {
-      background: #0f6b9e;
-      color: white;
-      box-shadow: 0 4px 10px rgba(11,107,158,0.3);
-    }
-    body.dark .cat-btn.active {
-      background: #2c7da0;
-      color: white;
-    }
+    .card { background: var(--card); border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .card-img { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; background: #eee; }
+    .card-text h4 { font-size: 0.95rem; font-weight: 700; }
+    .card-text p { font-size: 0.75rem; color: var(--sub); display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* notification card (elegant) */
-    .info-card {
-      background: white;
-      margin: 12px 16px;
-      border-radius: 24px;
-      padding: 16px 18px;
-      transition: all 0.2s;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05);
-    }
-    body.dark .info-card {
-      background: #1e293b;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .notify-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .bell {
-      background: #eef2ff;
-      padding: 8px 12px;
-      border-radius: 60px;
-      font-size: 1.3rem;
-    }
-    body.dark .bell {
-      background: #334155;
-    }
-    .ads-badge {
-      background: #fef9c3;
-      color: #854d0e;
-      border-radius: 40px;
-      padding: 6px 14px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    body.dark .ads-badge {
-      background: #422c0c;
-      color: #fde047;
-    }
+    .btn-join { background: var(--primary); color: white; border: none; padding: 9px 16px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; }
+    .fav-btn { background: none; border: none; cursor: pointer; color: var(--sub); }
+    .fav-btn.active { color: #ffb800; }
 
-    /* groups grid / list */
-    .groups-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 8px 16px 24px 16px;
-    }
-    .group-card {
-      background: white;
-      border-radius: 24px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.05);
-    }
-    body.dark .group-card {
-      background: #1e293b;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-    .group-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px -12px rgba(0,0,0,0.15);
-    }
-    .group-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex: 1;
-    }
-    .group-logo {
-      width: 52px;
-      height: 52px;
-      border-radius: 28px;
-      object-fit: cover;
-      background: #e2e8f0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    body.dark .group-logo {
-      background: #334155;
-    }
-    .group-details {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .group-name {
-      font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: -0.2px;
-    }
-    .group-cat {
-      font-size: 0.7rem;
-      background: #eef2ff;
-      display: inline-block;
-      width: fit-content;
-      padding: 3px 10px;
-      border-radius: 30px;
-      color: #1e3a8a;
-      font-weight: 600;
-    }
-    body.dark .group-cat {
-      background: #2d3a5e;
-      color: #bbd7fb;
-    }
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .join-btn {
-      background: linear-gradient(95deg, #0088cc, #0a6b9e);
-      border: none;
-      padding: 8px 18px;
-      border-radius: 40px;
-      color: white;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 2px 5px rgba(0,136,204,0.3);
-    }
-    .join-btn:hover {
-      transform: scale(0.96);
-      background: linear-gradient(95deg, #0077b3, #095e8a);
-    }
-    .fav-btn {
-      background: rgba(0,0,0,0.05);
-      border: none;
-      font-size: 1.55rem;
-      cursor: pointer;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-    }
-    body.dark .fav-btn {
-      background: rgba(255,255,255,0.08);
-    }
-    .fav-btn:hover {
-      background: rgba(0,0,0,0.1);
-      transform: scale(0.94);
-    }
+    .fab { position: fixed; bottom: 25px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,136,204,0.4); z-index: 100; }
 
-    /* empty state */
-    .empty-state {
-      text-align: center;
-      padding: 48px 20px;
-      opacity: 0.7;
-    }
-    .empty-state svg {
-      width: 80px;
-      margin-bottom: 16px;
-    }
-
-    /* footer */
-    .footer-note {
-      text-align: center;
-      font-size: 0.7rem;
-      padding: 20px 16px 30px;
-      color: #64748b;
-    }
-    body.dark .footer-note {
-      color: #94a3b8;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-    .group-card {
-      animation: fadeIn 0.25s ease forwards;
-    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo-title">
-    🧩 AllGroup <span>beta</span>
-  </div>
-  <button class="dark-toggle" id="darkModeBtn" aria-label="Dark mode">🌙</button>
-</div>
+<div class="drawer-overlay" id="overlay"></div>
 
-<div class="search-wrapper">
-  <div class="search-box">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Search groups by name..." autocomplete="off">
-  </div>
-</div>
-
-<div class="categories" id="categoryContainer">
-  <button data-cat="all" class="cat-btn active">✨ All</button>
-  <button data-cat="study" class="cat-btn">📚 Study</button>
-  <button data-cat="fun" class="cat-btn">🎉 Fun</button>
-</div>
-
-<!-- dynamic notification panel -->
-<div class="info-card" id="infoPanel">
-  <div class="notify-row">
-    <div class="bell">🔔</div>
-    <div id="notificationText" style="font-weight: 500;">Loading announcements...</div>
-  </div>
-  <div id="adsText" style="font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
-    <span>📢</span> <span>Fetching latest updates</span>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><h2>AllGroup Pro</h2><p id="subCount">Communities</p></div>
+  <div class="sidebar-menu">
+    <div class="menu-item active" id="menuHome">
+      <svg class="icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home Page
+    </div>
+    <div class="menu-item" id="menuFav">
+      <svg class="icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favourite Groups
+    </div>
+    <div class="menu-item" id="themeToggle">
+      <svg class="icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Night Mode
+    </div>
   </div>
 </div>
 
-<!-- Groups grid -->
-<div id="groupsList" class="groups-container"></div>
-<div class="footer-note">
-  ⚡ Join any group • Save favorites • Stay connected
+<div class="app-wrapper">
+  <div class="header">
+    <div id="openBtn" style="cursor:pointer">
+      <svg class="icon" style="width:26px; height:26px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </div>
+    <div class="logo">AllGroup</div>
+  </div>
+
+  <div class="main-content">
+    <div id="messageDisplay"></div>
+
+    <div class="page-header">
+      <div class="page-title" id="pageTitle">Home Page</div>
+      <div class="search-wrap">
+        <svg class="icon" style="width:18px; stroke:var(--sub)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search groups...">
+      </div>
+    </div>
+
+    <div class="container" id="groupList"></div>
+  </div>
+
+  <div class="fab" onclick="window.open('https://sfw.vc/+h7pjM9VrDjg1l6ekQ6A1jA')">
+    <svg class="icon" style="width:28px; stroke-width:2.5;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </div>
 </div>
 
 <script>
-  // ---------- DATA & STATE ----------
-  let allGroups = [];            // will be loaded from JSON
-  let favorites = new Set();     // store indices as numbers
-  let currentFilter = "all";
-  let currentSearch = "";
+  let groups = [];
+  let favorites = new Set(JSON.parse(localStorage.getItem('all_favs') || '[]'));
+  let currentPage = 'home';
+  let query = '';
 
-  // Load favorites from localStorage (migrate from array if needed)
-  try {
-    const stored = localStorage.getItem("allgroup_fav");
-    if (stored) {
-      const arr = JSON.parse(stored);
-      if (Array.isArray(arr)) favorites = new Set(arr);
-    }
-  } catch(e) { console.warn(e); }
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const groupList = document.getElementById('groupList');
+  const pageTitle = document.getElementById('pageTitle');
+  const messageDisplay = document.getElementById('messageDisplay');
 
-  // Helper: save favorites
-  function saveFavorites() {
-    const favArray = Array.from(favorites);
-    localStorage.setItem("allgroup_fav", JSON.stringify(favArray));
+  // Drawer
+  const toggleDrawer = () => { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); };
+  document.getElementById('openBtn').onclick = toggleDrawer;
+  overlay.onclick = toggleDrawer;
+
+  // Nav
+  document.getElementById('menuHome').onclick = () => { navigate('home'); toggleDrawer(); };
+  document.getElementById('menuFav').onclick = () => { navigate('fav'); toggleDrawer(); };
+
+  function navigate(page) {
+    currentPage = page;
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+    document.getElementById(page === 'home' ? 'menuHome' : 'menuFav').classList.add('active');
+    pageTitle.textContent = page === 'home' ? 'Home Page' : 'Favourite Groups';
+    // Hide message display on favorites page
+    messageDisplay.style.display = page === 'home' ? 'block' : 'none';
+    render();
   }
 
-  // ---------- DOM Elements ----------
-  const groupsContainer = document.getElementById("groupsList");
-  const searchInput = document.getElementById("searchInput");
-  const notificationDiv = document.getElementById("notificationText");
-  const adsSpan = document.getElementById("adsText");
-  const darkBtn = document.getElementById("darkModeBtn");
+  // Theme
+  document.getElementById('themeToggle').onclick = () => {
+    const isDark = document.body.classList.toggle('dark');
+    localStorage.setItem('all_dark', isDark);
+  };
+  if(localStorage.getItem('all_dark') === 'true') document.body.classList.add('dark');
 
-  // ---------- Dark Mode with persistence ----------
-  function initDarkMode() {
-    const isDark = localStorage.getItem("allgroup_dark") === "true";
-    if (isDark) {
-      document.body.classList.add("dark");
-      darkBtn.innerHTML = "☀️";
-    } else {
-      darkBtn.innerHTML = "🌙";
-    }
-  }
-  function toggleDarkMode() {
-    document.body.classList.toggle("dark");
-    const darkActive = document.body.classList.contains("dark");
-    localStorage.setItem("allgroup_dark", darkActive);
-    darkBtn.innerHTML = darkActive ? "☀️" : "🌙";
-  }
-  darkBtn.addEventListener("click", toggleDarkMode);
-  initDarkMode();
+  // Render Groups
+  function render() {
+    let filtered = currentPage === 'fav' ? groups.filter(g => favorites.has(g.id)) : groups;
+    if(query) filtered = filtered.filter(g => g.name.toLowerCase().includes(query) || g.description.toLowerCase().includes(query));
 
-  // ---------- Render Groups (core) with filtering & search & favorites highlight ----------
-  function renderGroups() {
+    groupList.innerHTML = filtered.length ? '' : `<div style="text-align:center; padding:40px; opacity:0.5;">No groups found</div>`;
+    
+    filtered.forEach(g => {
+      const isFav = favorites.has(g.id);
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div style="display:flex; align-items:center; gap:14px; flex:1;">
+          <img class="card-img" src="${g.logo}" loading="lazy">
+          <div class="card-text">
+            <h4>${g.name}</h4>
+            <p>${g.description}</p>
+            <div style="font-size:0.7rem; color:var(--sub); margin-top:4px;">👤 ${g.members.toLocaleString()}</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${g.id}">
+            <svg class="icon" style="${isFav ? 'fill:currentColor' : ''}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+          <button class="btn-join" onclick="window.open('${g.link}', '_blank')">JOIN</button>
+        </div>
+      `;
+      groupList.appendChild(card);
+    });
+  }
+
+  // Fetch Message & Groups
+  async function init() {
+    try {
+      // Fetch Groups
+      const resG = await fetch('https://itzmebibk-spec.github.io/Alldarkxop/newgroups.json');
+      const dataG = await resG.json();
+      groups = dataG.groups;
+      document.getElementById('subCount').textContent = `${groups.length} Communities`;
+
+      // Fetch Message.json
+      const resM = await fetch('https://itzmebibk-spec.github.io/Alldarkxop/announcement.json');
+      const dataM = await resM.json();
+      
+      if(dataM.notification) {
+        const n = dataM.notification;
+        messageDisplay.innerHTML = `
+          <div class="msg-box">
+            <h3><svg class="icon" style="width:18px;height:18px;stroke:var(--primary)"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${n.title}</h3>
+            <p>${n.message}</p>
+            <a href="${dataM.promotions.link}" class="msg-link">
+              <svg class="icon" style="width:14px;height:14px;stroke:white"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Join Official Channel
+            </a>
+          </div>
+        `;
+      }
+
+      render();
+    } catch (e) { console.error(e); }
+  }
+
+  groupList.onclick = (e) => {
+    const btn = e.target.closest('.fav-btn');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    favorites.has(id) ? favorites.delete(id) : favorites.add(id);
+    localStorage.setItem('all_favs', JSON.stringify([...favorites]));
+    render();
+  };
+
+  document.getElementById('searchInput').oninput = (e) => { query = e.target.value.toLowerCase(); render(); };
+
+  init();
+</script>
+</body>
+</html>
+G.json();
+      groups = gData.groups;
+
+      const aData = await resA.json();
+      if(aData.stats) {
+        document.getElementById('totalCount').textContent = `${aData.stats.totalGroups} Communities Online`;
+        document.getElementById('stats').innerHTML = `<span>${aData.stats.totalGroups} Communities</span><span>${aData.stats.activeToday.toLocaleString()} Active</span>`;
+      }
+      render();
+    } catch (e) { console.error(e); }
+  }
+
+  init();
+</script>
+</body>
+</html>
+st renderGroups = () => {
+    if (isLoading) return;
+    
     if (!allGroups.length) {
-      groupsContainer.innerHTML = `<div class="empty-state">
-        <div>📭</div><p style="margin-top:8px;">No groups available. Check network or reload.</p>
-      </div>`;
+      groupsContainer.innerHTML = `<div class="empty-state"><div>📭</div><p>No groups available</p></div>`;
       return;
     }
-
-    // 1. filter by category
-    let filtered = [...allGroups];
-    if (currentFilter !== "all") {
-      filtered = filtered.filter(g => g.category === currentFilter);
-    }
-    // 2. search by name (case insensitive)
-    if (currentSearch.trim() !== "") {
+    
+    let filtered = allGroups;
+    if (currentSearch.trim()) {
       const query = currentSearch.trim().toLowerCase();
       filtered = filtered.filter(g => g.name.toLowerCase().includes(query));
     }
-
+    
     if (filtered.length === 0) {
-      groupsContainer.innerHTML = `<div class="empty-state">
-        <div>🔎</div><p>No groups match "${currentSearch || (currentFilter !== 'all' ? currentFilter : '')}"</p>
-      </div>`;
+      groupsContainer.innerHTML = `<div class="empty-state"><div>🔎</div><p>No groups match "${escapeHtml(currentSearch)}"</p></div>`;
       return;
     }
-
-    // build HTML with indices (original index used for favorite storage)
-    groupsContainer.innerHTML = "";
-    filtered.forEach((group, idx) => {
-      // we need original index for favorite mapping (since we filter)
-      const originalIndex = allGroups.findIndex(g => g.id === group.id);  // using unique id
+    
+    const fragment = document.createDocumentFragment();
+    
+    filtered.forEach(group => {
+      const originalIndex = allGroups.findIndex(g => g.id === group.id);
       const isFav = favorites.has(originalIndex);
       
-      const card = document.createElement("div");
-      card.className = "group-card";
+      const logoUrl = group.logo && group.logo.startsWith('http') 
+        ? group.logo 
+        : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${encodeURIComponent(group.name.charAt(0))}&size=48`;
       
-      // logo fallback with initials
-      const logoUrl = group.logo && group.logo.startsWith("http") ? group.logo : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&bold=true&name=${encodeURIComponent(group.name.charAt(0))}&size=52`;
+      const categoryLabel = group.category === 'study' ? '📖 Study' : '🎈 Fun';
+      const memberCount = formatNumber(group.members);
       
-      const categoryLabel = group.category === "study" ? "📖 Study" : (group.category === "fun" ? "🎈 Fun" : "🌐 General");
-      
+      const card = document.createElement('div');
+      card.className = 'group-card';
       card.innerHTML = `
         <div class="group-info">
-          <img class="group-logo" src="${logoUrl}" alt="${group.name}" onerror="this.src='https://ui-avatars.com/api/?background=64748b&color=fff&name=${group.name.charAt(0)}'">
+          <img class="group-logo" src="${logoUrl}" alt="${escapeHtml(group.name)}" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?background=64748b&color=fff&name=${group.name.charAt(0)}'">
           <div class="group-details">
             <div class="group-name">${escapeHtml(group.name)}</div>
-            <div class="group-cat">${categoryLabel}</div>
+            <div class="group-meta">
+              <span class="group-cat">${categoryLabel}</span>
+              <span class="group-members">👥 ${memberCount}</span>
+            </div>
+            ${group.description ? `<div class="group-desc">${escapeHtml(group.description)}</div>` : ''}
           </div>
         </div>
         <div class="action-buttons">
-          <button class="join-btn" data-link="${group.link}">Join ➜</button>
-          <button class="fav-btn" data-index="${originalIndex}" data-fav="${isFav}">${isFav ? "⭐" : "☆"}</button>
+          <button class="join-btn" data-link="${escapeHtml(group.link)}">Join →</button>
+          <button class="fav-btn" data-index="${originalIndex}">${isFav ? '⭐' : '☆'}</button>
         </div>
       `;
-      
-      groupsContainer.appendChild(card);
+      fragment.appendChild(card);
     });
     
-    // attach event listeners dynamically (better performance)
-    document.querySelectorAll(".join-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const link = btn.getAttribute("data-link");
-        if (link && link !== "#") window.open(link, "_blank", "noopener,noreferrer");
-        else alert("Link not available");
-      });
-    });
+    groupsContainer.innerHTML = '';
+    groupsContainer.appendChild(fragment);
     
-    document.querySelectorAll(".fav-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const idx = parseInt(btn.getAttribute("data-index"));
-        if (isNaN(idx)) return;
-        const wasFav = favorites.has(idx);
-        if (wasFav) {
+    // Event delegation
+    groupsContainer.removeEventListener('click', handleGroupClick);
+    groupsContainer.addEventListener('click', handleGroupClick);
+  };
+  
+  // ========== EVENT HANDLER ==========
+  const handleGroupClick = (e) => {
+    const joinBtn = e.target.closest('.join-btn');
+    const favBtn = e.target.closest('.fav-btn');
+    
+    if (joinBtn) {
+      e.preventDefault();
+      const link = joinBtn.getAttribute('data-link');
+      if (link && link !== '#') {
+        window.open(link, '_blank', 'noopener,noreferrer');
+      }
+    }
+    
+    if (favBtn) {
+      e.preventDefault();
+      const idx = parseInt(favBtn.getAttribute('data-index'));
+      if (!isNaN(idx)) {
+        if (favorites.has(idx)) {
           favorites.delete(idx);
         } else {
           favorites.add(idx);
         }
         saveFavorites();
-        renderGroups();  // re-render to reflect favorite stars
-      });
-    });
-  }
-
-  // simple XSS protection
-  function escapeHtml(str) {
-    if (!str) return "";
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-      return c;
-    });
-  }
-
-  // ---------- Fetch groups with enhanced structure (supports id + fallback) ----------
-  async function fetchGroups() {
+        renderGroups();
+      }
+    }
+  };
+  
+  // ========== SHOW SKELETON ==========
+  const showSkeleton = () => {
+    const skeletons = Array(5).fill().map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-logo"></div>
+        <div class="skeleton-text"></div>
+      </div>
+    `).join('');
+    groupsContainer.innerHTML = skeletons;
+  };
+  
+  // ========== FETCH GROUPS ==========
+  const fetchGroups = async () => {
     try {
-      const response = await fetch("https://itzmebibk-spec.github.io/Alldarkxop/newgroups.json");
-      if (!response.ok) throw new Error("Network error");
+      const response = await fetch('groups.json');
+      if (!response.ok) throw new Error('Network error');
       const data = await response.json();
-      // support both "groups" array or direct array
-      let groupsArray = Array.isArray(data) ? data : (data.groups || []);
-      if (!groupsArray.length) throw new Error("Empty groups");
       
-      // enrich each group: assign unique id (based on name+index) if missing, and ensure category & link
+      // Support both formats: direct array or { groups: [] }
+      let groupsArray = Array.isArray(data) ? data : (data.groups || []);
+      
       allGroups = groupsArray.map((g, idx) => ({
-        id: g.id || `group_${idx}_${Date.now()}`,
-        name: g.name || "Unnamed Group",
-        link: g.link || "#",
-        category: (g.category === "study" || g.category === "fun") ? g.category : "general",
+        id: g.id || `group_${idx}`,
+        name: g.name || 'Unnamed Group',
+        link: g.link || '#',
+        category: g.category === 'study' ? 'study' : 'fun',
         logo: g.logo || null,
-        originalIndex: idx
+        description: g.description || '',
+        members: g.members || 0
       }));
       
-      // after loading, reapply favorites: but favorites store indices based on this new allGroups order
-      // we need to clean favorites indices that exceed range
+      // Clean invalid favorites
       const maxIndex = allGroups.length - 1;
       const validFavs = new Set();
       for (let favIdx of favorites) {
@@ -561,53 +377,56 @@
       favorites = validFavs;
       saveFavorites();
       
+      updateStats();
+      isLoading = false;
       renderGroups();
     } catch (err) {
-      console.error("Groups fetch error:", err);
-      groupsContainer.innerHTML = `<div class="empty-state"><div>⚠️</div><p>Failed to load groups.<br>Check connection or refresh.</p></div>`;
-      // fallback mock data? not needed, but user sees nice msg
-      allGroups = [];
-      renderGroups();
+      console.error('Fetch error:', err);
+      isLoading = false;
+      groupsContainer.innerHTML = `<div class="empty-state"><div>⚠️</div><p>Failed to load groups<br>Make sure groups.json exists</p></div>`;
     }
-  }
+  };
   
-  // ---------- Fetch Announcement (notification & ads) with better formatting ----------
-  async function fetchAnnouncements() {
+  // ========== FETCH ANNOUNCEMENTS ==========
+  const fetchAnnouncements = async () => {
     try {
-      const res = await fetch("https://itzmebibk-spec.github.io/Alldarkxop/announcement.json");
+      const res = await fetch('announcement.json');
       if (!res.ok) throw new Error();
       const data = await res.json();
+      
       if (data.notification) {
         notificationDiv.innerHTML = `🔔 ${escapeHtml(data.notification)}`;
-      } else {
-        notificationDiv.innerHTML = `📢 Stay tuned!`;
       }
       if (data.ads) {
         adsSpan.innerHTML = `<span>📢</span> <span>${escapeHtml(data.ads)}</span>`;
-      } else {
-        adsSpan.innerHTML = `<span>✨</span> <span>No active promotions</span>`;
       }
     } catch (err) {
-      notificationDiv.innerHTML = "📡 Welcome to AllGroup!";
-      adsSpan.innerHTML = `<span>💡</span> <span>Join the best communities</span>`;
+      notificationDiv.innerHTML = '📡 Welcome to AllGroup!';
+      adsSpan.innerHTML = `<span>💡</span> <span>Join amazing communities</span>`;
     }
-  }
+  };
   
-  // ---------- Category filter with active UI ----------
-  function setupCategories() {
-    const btns = document.querySelectorAll(".cat-btn");
-    btns.forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        const cat = btn.getAttribute("data-cat");
-        if (!cat) return;
-        currentFilter = cat;
-        // update active class
-        btns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        // reset search if needed? keep search but re-render
-        renderGroups();
-      });
-    });
+  // ========== SEARCH DEBOUNCE ==========
+  let searchDebounce;
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(() => {
+      currentSearch = e.target.value;
+      renderGroups();
+    }, 200);
+  });
+  
+  // ========== INIT ==========
+  const init = async () => {
+    loadFavorites();
+    showSkeleton();
+    await Promise.all([fetchGroups(), fetchAnnouncements()]);
+  };
+  
+  init();
+</script>
+</body>
+</html>  });
   }
   
   // search with debounce
